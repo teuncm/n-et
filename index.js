@@ -2,21 +2,21 @@ export const FREQ_REF_DEFAULT = 440;
 export const MIDI_NUM_REF_DEFAULT = 69;
 export const NOTES_PER_OCT_DEFAULT = 12;
 
-/* Table of 12-TET chromatic note names with sharps. */
-export const PITCH_CLASS_TABLE = {
-  0: "C",
-  1: "C#",
-  2: "D",
-  3: "D#",
-  4: "E",
-  5: "F",
-  6: "F#",
-  7: "G",
-  8: "G#",
-  9: "A",
-  10: "A#",
-  11: "B"
-};
+/* Table of 12-ET chromatic note names using sharps. */
+export const PITCH_CLASS_TABLE = [
+  "C",
+  "C#",
+  "D",
+  "D#",
+  "E",
+  "F",
+  "F#",
+  "G",
+  "G#",
+  "A",
+  "A#",
+  "B"
+];
 
 export class ET {
   freqRef;
@@ -30,14 +30,14 @@ export class ET {
   }
 
   midiNumToFreq(midiNum) {
-    let midiNumDiff = midiNum - this.midiNumRef;
-    let freq = this.freqRef * Math.pow(2, midiNumDiff / this.notesPerOct);
+    const midiNumDiff = midiNum - this.midiNumRef;
+    const freq = this.freqRef * Math.pow(2, midiNumDiff / this.notesPerOct);
 
     return freq;
   }
 
   freqToMidiNum(freq) {
-    let midiNum = this.notesPerOct * Math.log2(freq / this.freqRef) + this.midiNumRef;
+    const midiNum = Math.round(this.notesPerOct * Math.log2(freq / this.freqRef) + this.midiNumRef);
 
     return midiNum;
   }
@@ -49,22 +49,37 @@ export class ET12 extends ET {
   }
 
   midiNumToOct(midiNum) {
-    let oct = Math.floor(midiNum / NOTES_PER_OCT_DEFAULT) - 1;
+    const oct = Math.floor(midiNum / NOTES_PER_OCT_DEFAULT) - 1;
 
     return oct;
   }
 
   midiNumToPitchClass(midiNum) {
-    let tableIdx = mod(midiNum, NOTES_PER_OCT_DEFAULT);
-    let pitchClass = PITCH_CLASS_TABLE[tableIdx];
+    const tableIdx = mod(midiNum, NOTES_PER_OCT_DEFAULT);
+    const pitchClass = PITCH_CLASS_TABLE[tableIdx];
 
     return pitchClass;
   }
 
   midiNumToSPN(midiNum) {
-    let SPN = `${this.midiNumToPitchClass(midiNum)}${this.midiNumToOct(midiNum)}`;
+    const SPN = `${this.midiNumToPitchClass(midiNum)}${this.midiNumToOct(midiNum)}`;
 
     return SPN;
+  }
+
+  SPNToMidiNum(SPN) {
+    SPN = SPN.toUpperCase();
+
+    const octRe = /[-]?[\d]+/;
+    const oct = parseInt(SPN.match(octRe)[0]);
+
+    const pitchClassRe = /[A-Z][#]?/;
+    const pitchClass = SPN.match(pitchClassRe)[0];
+    const pitchClassIdx = PITCH_CLASS_TABLE.indexOf(pitchClass);
+
+    const midiNum = (oct + 1) * NOTES_PER_OCT_DEFAULT + pitchClassIdx;
+
+    return midiNum;
   }
 }
 
