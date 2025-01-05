@@ -29,14 +29,14 @@ export class ET {
     this.notesPerOct = notesPerOct;
   }
 
-  getFreq(midiNum) {
+  midiNumToFreq(midiNum) {
     let midiNumDiff = midiNum - this.midiNumRef;
     let freq = this.freqRef * Math.pow(2, midiNumDiff / this.notesPerOct);
 
     return freq;
   }
 
-  getMidiNum(freq) {
+  freqToMidiNum(freq) {
     let midiNum = this.notesPerOct * Math.log2(freq / this.freqRef) + this.midiNumRef;
 
     return midiNum;
@@ -48,23 +48,23 @@ export class ET12 extends ET {
     super(freqRef);
   }
 
-  getOct(midiNum) {
+  midiNumToOct(midiNum) {
     let oct = Math.floor(midiNum / NOTES_PER_OCT_DEFAULT) - 1;
 
     return oct;
   }
 
-  getPitchClass(midiNum) {
+  midiNumToPitchClass(midiNum) {
     let tableIdx = mod(midiNum, NOTES_PER_OCT_DEFAULT);
     let pitchClass = PITCH_CLASS_TABLE[tableIdx];
 
     return pitchClass;
   }
 
-  getFullName(midiNum) {
-    let fullName = `${this.getPitchClass(midiNum)}${this.getOct(midiNum)}`;
+  midiNumToSPN(midiNum) {
+    let SPN = `${this.midiNumToPitchClass(midiNum)}${this.midiNumToOct(midiNum)}`;
 
-    return fullName;
+    return SPN;
   }
 }
 
