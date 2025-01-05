@@ -1,7 +1,7 @@
 {
   "name": "@teuncm/n-et",
   "version": "0.0.5",
-  "description": "Create and perform calculations on arbitrary equal temperament tunings.",
+  "description": "Create and perform calculations on arbitrary equal temperament tunings. Useful for web apps that deal with MIDI, frequency or note information.",
   "license": "ISC",
   "author": "teuncm",
   "homepage": "https://github.com/teuncm/n-et",
