@@ -1,13 +1,14 @@
 {
   "name": "@teuncm/n-et",
   "version": "0.0.4",
-  "description": "",
+  "description": "Create and perform calculations on arbitrary equal temperament tunings.",
   "license": "ISC",
-  "author": "",
+  "author": "teuncm",
+  "homepage": "https://github.com/teuncm/n-et",
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": ".\\node_modules\\.bin\\mocha"
+    "test": "mocha"
   },
   "devDependencies": {
     "chai": "^5.1.2",
