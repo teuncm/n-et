@@ -1,6 +1,8 @@
 import { expect } from 'chai';
 import * as myModule from '../index.js';
 
+const EPSILON = 1e-9
+
 describe('ET12', () => {
   let et12;
 
@@ -37,8 +39,19 @@ describe('ET12', () => {
     expect(et12.SPNToMidiNum("C5")).to.equal(72);
   });
 
-  it('should behave consistently', () => {
+  it('should handle identity conversions', () => {
     expect(et12.freqToMidiNum(et12.midiNumToFreq(42))).to.equal(42);
     expect(et12.SPNToMidiNum(et12.midiNumToSPN(42))).to.equal(42);
+    expect(et12.freqRatioToCents(et12.centsToFreqRatio(42))).to.be.closeTo(42, EPSILON);
+  });
+
+  it('should handle cents', () => {
+    expect(et12.centsToFreqRatio(0)).to.equal(1);
+    expect(et12.centsToFreqRatio(1200)).to.equal(2);
+  });
+
+  it('should handle ratios', () => {
+    expect(et12.freqRatioToCents(1)).to.equal(0);
+    expect(et12.freqRatioToCents(2)).to.equal(1200);
   });
 });

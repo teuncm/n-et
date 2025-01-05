@@ -22,24 +22,41 @@ export class ET {
   freqRef;
   midiNumRef;
   notesPerOct;
+  centsPerOct;
 
   constructor(freqRef = FREQ_REF_DEFAULT, midiNumRef = MIDI_NUM_REF_DEFAULT, notesPerOct = NOTES_PER_OCT_DEFAULT) {
     this.freqRef = freqRef;
     this.midiNumRef = midiNumRef;
     this.notesPerOct = notesPerOct;
+    this.centsPerOct = notesPerOct * 100;
   }
 
   midiNumToFreq(midiNum) {
-    const midiNumDiff = midiNum - this.midiNumRef;
+    const midiNumRounded = Math.round(midiNum);
+
+    const midiNumDiff = midiNumRounded - this.midiNumRef;
     const freq = this.freqRef * Math.pow(2, midiNumDiff / this.notesPerOct);
 
     return freq;
   }
 
   freqToMidiNum(freq) {
-    const midiNum = Math.round(this.notesPerOct * Math.log2(freq / this.freqRef) + this.midiNumRef);
+    const midiNum = this.notesPerOct * Math.log2(freq / this.freqRef) + this.midiNumRef;
+    const midiNumRounded = Math.round(midiNum);
 
-    return midiNum;
+    return midiNumRounded;
+  }
+
+  centsToFreqRatio(cents) {
+    const freqRatio = Math.pow(2, cents / this.centsPerOct);
+
+    return freqRatio;
+  }
+
+  freqRatioToCents(freqRatio) {
+    const cents = this.centsPerOct * Math.log2(freqRatio);
+
+    return cents;
   }
 }
 
@@ -55,7 +72,9 @@ export class ET12 extends ET {
   }
 
   midiNumToPitchClass(midiNum) {
-    const tableIdx = mod(midiNum, NOTES_PER_OCT_DEFAULT);
+    const midiNumRounded = Math.round(midiNum);
+
+    const tableIdx = mod(midiNumRounded, NOTES_PER_OCT_DEFAULT);
     const pitchClass = PITCH_CLASS_TABLE[tableIdx];
 
     return pitchClass;
@@ -68,13 +87,13 @@ export class ET12 extends ET {
   }
 
   SPNToMidiNum(SPN) {
-    SPN = SPN.toUpperCase();
+    const SPNFiltered = SPN.toUpperCase();
 
     const octRe = /[-]?[\d]+/;
-    const oct = parseInt(SPN.match(octRe)[0]);
+    const oct = parseInt(SPNFiltered.match(octRe)[0]);
 
     const pitchClassRe = /[A-Z][#]?/;
-    const pitchClass = SPN.match(pitchClassRe)[0];
+    const pitchClass = SPNFiltered.match(pitchClassRe)[0];
     const pitchClassIdx = PITCH_CLASS_TABLE.indexOf(pitchClass);
 
     const midiNum = (oct + 1) * NOTES_PER_OCT_DEFAULT + pitchClassIdx;
