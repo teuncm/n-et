@@ -22,13 +22,11 @@ export class ET {
   freqRef;
   midiNumRef;
   notesPerOct;
-  centsPerOct;
 
   constructor(freqRef = FREQ_REF_DEFAULT, midiNumRef = MIDI_NUM_REF_DEFAULT, notesPerOct = NOTES_PER_OCT_DEFAULT) {
     this.freqRef = freqRef;
     this.midiNumRef = midiNumRef;
     this.notesPerOct = notesPerOct;
-    this.centsPerOct = notesPerOct * 100;
   }
 
   midiNumToFreq(midiNum) {
@@ -47,16 +45,16 @@ export class ET {
     return midiNumRounded;
   }
 
-  centsToFreqRatio(cents) {
-    const freqRatio = Math.pow(2, cents / this.centsPerOct);
+  semitonesToFreqRatio(semitones) {
+    const freqRatio = Math.pow(2, semitones / this.notesPerOct);
 
     return freqRatio;
   }
 
-  freqRatioToCents(freqRatio) {
-    const cents = this.centsPerOct * Math.log2(freqRatio);
+  freqRatioToSemitones(freqRatio) {
+    const semitones = this.notesPerOct * Math.log2(freqRatio);
 
-    return cents;
+    return semitones;
   }
 }
 

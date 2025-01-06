@@ -42,16 +42,16 @@ describe('ET12', () => {
   it('should handle identity conversions', () => {
     expect(et12.freqToMidiNum(et12.midiNumToFreq(42))).to.equal(42);
     expect(et12.SPNToMidiNum(et12.midiNumToSPN(42))).to.equal(42);
-    expect(et12.freqRatioToCents(et12.centsToFreqRatio(42))).to.be.closeTo(42, EPSILON);
+    expect(et12.freqRatioToSemitones(et12.semitonesToFreqRatio(42))).to.be.closeTo(42, EPSILON);
   });
 
-  it('should handle cents', () => {
-    expect(et12.centsToFreqRatio(0)).to.equal(1);
-    expect(et12.centsToFreqRatio(1200)).to.equal(2);
+  it('should handle semitones', () => {
+    expect(et12.semitonesToFreqRatio(0)).to.equal(1);
+    expect(et12.semitonesToFreqRatio(12)).to.equal(2);
   });
 
-  it('should handle ratios', () => {
-    expect(et12.freqRatioToCents(1)).to.equal(0);
-    expect(et12.freqRatioToCents(2)).to.equal(1200);
+  it('should handle frequency ratios', () => {
+    expect(et12.freqRatioToSemitones(1)).to.equal(0);
+    expect(et12.freqRatioToSemitones(2)).to.equal(12);
   });
 });
