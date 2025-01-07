@@ -18,6 +18,15 @@ export const PITCH_CLASS_TABLE = [
   "B"
 ];
 
+/* Flats to sharps translation table. */
+export const PITCH_CLASS_TRANSLATION_TABLE = {
+  "Db": "C#",
+  "Eb": "D#",
+  "Gb": "F#",
+  "Ab": "G#",
+  "Bb": "A#"
+}
+
 export class ET {
   freqRef;
   midiNumRef;
@@ -84,15 +93,23 @@ export class ET12 extends ET {
     return SPN;
   }
 
+  normalizePitchClass(pitchClass) {
+    const pitchClassReplaced = pitchClass.replace("♯", "#").replace("♭", "b");
+    const pitchClassTranslated = PITCH_CLASS_TRANSLATION_TABLE[pitchClassReplaced] ?? pitchClassReplaced;
+    
+    return pitchClassTranslated;
+  }
+
   SPNToMidiNum(SPN) {
-    const SPNFiltered = SPN.toUpperCase();
-
+    /* Second segment is the octave number. Can be negative and multi-digit. */
     const octRe = /[-]?[\d]+/;
-    const oct = parseInt(SPNFiltered.match(octRe)[0]);
+    const octStr = SPN.match(octRe)[0];
+    const oct = parseInt(octStr);
 
-    const pitchClassRe = /[A-Z][#]?/;
-    const pitchClass = SPNFiltered.match(pitchClassRe)[0];
-    const pitchClassIdx = PITCH_CLASS_TABLE.indexOf(pitchClass);
+    /* First segment (remainder) is the pitch class. */
+    const pitchClass = SPN.replace(octStr, "");
+    const pitchClassNormalized = this.normalizePitchClass(pitchClass);
+    const pitchClassIdx = PITCH_CLASS_TABLE.indexOf(pitchClassNormalized);
 
     const midiNum = (oct + 1) * NOTES_PER_OCT_DEFAULT + pitchClassIdx;
 

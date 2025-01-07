@@ -54,4 +54,9 @@ describe('ET12', () => {
     expect(et12.freqRatioToSemitones(1)).to.equal(0);
     expect(et12.freqRatioToSemitones(2)).to.equal(12);
   });
+
+  it('should handle translation', () => {
+    expect(et12.SPNToMidiNum("C#-10")).to.equal(et12.SPNToMidiNum("Db-10"));
+    expect(et12.SPNToMidiNum("D#12")).to.equal(et12.SPNToMidiNum("Eb12"));
+  });
 });
