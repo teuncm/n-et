@@ -59,4 +59,29 @@ describe('ET12', () => {
     expect(et12.SPNToMidiNum("C#-10")).to.equal(et12.SPNToMidiNum("Db-10"));
     expect(et12.SPNToMidiNum("D#12")).to.equal(et12.SPNToMidiNum("Eb12"));
   });
+
+  it('should detune midi by semitones', () => {
+    let b3Midi = et12.SPNToMidiNum("B3");
+    let c4Midi = et12.SPNToMidiNum("C4");
+    let cs4Midi = et12.SPNToMidiNum("C#4");
+
+    expect(et12.midiNumToFreqDetuned(c4Midi, -1))
+      .to.equal(et12.midiNumToFreq(b3Midi));
+
+    expect(et12.midiNumToFreqDetuned(c4Midi, 1))
+      .to.equal(et12.midiNumToFreq(cs4Midi));
+  });
+
+  it('should obtain detune from freq', () => {
+    let b3Midi = et12.SPNToMidiNum("B3");
+    let c4Midi = et12.SPNToMidiNum("C4");
+    let b3FreqDetuned = et12.midiNumToFreqDetuned(c4Midi, -0.8);
+    let c4FreqDetuned = et12.midiNumToFreqDetuned(c4Midi, 0.2);
+
+    expect(et12.freqToMidiNumDetuned(b3FreqDetuned)[0]).to.equal(b3Midi);
+    expect(et12.freqToMidiNumDetuned(b3FreqDetuned)[1]).to.be.closeTo(0.2, EPSILON);
+
+    expect(et12.freqToMidiNumDetuned(c4FreqDetuned)[0]).to.equal(c4Midi);
+    expect(et12.freqToMidiNumDetuned(c4FreqDetuned)[1]).to.be.closeTo(0.2, EPSILON);
+  });
 });

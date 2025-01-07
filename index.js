@@ -27,6 +27,13 @@ export const PITCH_CLASS_TRANSLATION_TABLE = {
   "Bb": "A#"
 }
 
+/* Modulo function that behaves consistently in the negatives. 
+Source: https://stackoverflow.com/a/17323608 */
+function mod(n, m) {
+  return ((n % m) + m) % m;
+}
+
+/* Generalized equal temperament. */
 export class ET {
   freqRef;
   midiNumRef;
@@ -38,20 +45,40 @@ export class ET {
     this.notesPerOct = notesPerOct;
   }
 
-  midiNumToFreq(midiNum) {
-    const midiNumRounded = Math.round(midiNum);
+  quantizeMidiNum(midiNum) {
+    const quantizedMidiNum = Math.round(midiNum);
 
-    const midiNumDiff = midiNumRounded - this.midiNumRef;
-    const freq = this.freqRef * Math.pow(2, midiNumDiff / this.notesPerOct);
+    return quantizedMidiNum;
+  }
+
+  midiNumToFreq(midiNum) {
+    const midiNumQuantized = this.quantizeMidiNum(midiNum);
+    const midiNumRefDiff = midiNumQuantized - this.midiNumRef;
+    const freq = this.freqRef * Math.pow(2, midiNumRefDiff / this.notesPerOct);
 
     return freq;
   }
 
+  midiNumToFreqDetuned(midiNum, detune) {
+    const freq = this.midiNumToFreq(midiNum);
+    const freqDetuned = freq * this.semitonesToFreqRatio(detune);
+
+    return freqDetuned;
+  }
+
   freqToMidiNum(freq) {
     const midiNum = this.notesPerOct * Math.log2(freq / this.freqRef) + this.midiNumRef;
-    const midiNumRounded = Math.round(midiNum);
+    const midiNumQuantized = this.quantizeMidiNum(midiNum);
 
-    return midiNumRounded;
+    return midiNumQuantized;
+  }
+
+  freqToMidiNumDetuned(freq) {
+    const midiNum = this.freqToMidiNum(freq);
+    const freqQuantized = this.midiNumToFreq(midiNum);
+    const detune = this.freqRatioToSemitones(freq / freqQuantized);
+
+    return [midiNum, detune];
   }
 
   semitonesToFreqRatio(semitones) {
@@ -67,6 +94,10 @@ export class ET {
   }
 }
 
+/**
+ * 12 tone equal temperament, also known as 12-ET, 12-TET, 12-EDO etc. 
+ * Most commonly used tuning system today, both in digital and analog instruments.
+ * */
 export class ET12 extends ET {
   constructor(freqRef = FREQ_REF_DEFAULT) {
     super(freqRef);
@@ -79,9 +110,8 @@ export class ET12 extends ET {
   }
 
   midiNumToPitchClass(midiNum) {
-    const midiNumRounded = Math.round(midiNum);
-
-    const tableIdx = mod(midiNumRounded, NOTES_PER_OCT_DEFAULT);
+    const midiNumQuantized = this.quantizeMidiNum(midiNum);
+    const tableIdx = mod(midiNumQuantized, NOTES_PER_OCT_DEFAULT);
     const pitchClass = PITCH_CLASS_TABLE[tableIdx];
 
     return pitchClass;
@@ -96,7 +126,7 @@ export class ET12 extends ET {
   normalizePitchClass(pitchClass) {
     const pitchClassReplaced = pitchClass.replace("♯", "#").replace("♭", "b");
     const pitchClassTranslated = PITCH_CLASS_TRANSLATION_TABLE[pitchClassReplaced] ?? pitchClassReplaced;
-    
+
     return pitchClassTranslated;
   }
 
@@ -106,7 +136,7 @@ export class ET12 extends ET {
     const octStr = SPN.match(octRe)[0];
     const oct = parseInt(octStr);
 
-    /* First segment (remainder) is the pitch class. */
+    /* First segment is the pitch class. */
     const pitchClass = SPN.replace(octStr, "");
     const pitchClassNormalized = this.normalizePitchClass(pitchClass);
     const pitchClassIdx = PITCH_CLASS_TABLE.indexOf(pitchClassNormalized);
@@ -115,10 +145,4 @@ export class ET12 extends ET {
 
     return midiNum;
   }
-}
-
-/* Modulo function that behaves consistently in the negatives. 
-Source: https://stackoverflow.com/a/17323608 */
-function mod(n, m) {
-  return ((n % m) + m) % m;
 }
