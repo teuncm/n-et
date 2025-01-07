@@ -1,6 +1,6 @@
 {
   "name": "@teuncm/n-et",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "Library for equal temperament (ET/TET/EDO) tuning systems. Convert between MIDI, frequency and scientific pitch notation. Useful for building web synthesizers, tuners and more!",
   "license": "ISC",
   "author": "teuncm",
