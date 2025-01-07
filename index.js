@@ -7,7 +7,7 @@
  * These classes contain tested calculations to build tuners, digital synthesizers and more.
  */
 
-/* Default reference note frequency. */
+/* Default reference note frequency in Hz. */
 export const FREQ_REF_DEFAULT = 440;
 /* Default reference MIDI number. */
 export const MIDI_NUM_REF_DEFAULT = 69;
