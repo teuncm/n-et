@@ -1,7 +1,7 @@
 /**
  * Author: Teun Mathijssen
  * Link: https://github.com/teuncm/
- * Repository: https://github.com/teuncm/n-et/tree/main
+ * Repository: https://github.com/teuncm/n-et/
  * 
  * Create and perform calculations on arbitrary equal temperament tunings. Useful for web apps that deal with MIDI, frequency or note information.
  * These classes contain tested calculations to build tuners, digital synthesizers and more.
