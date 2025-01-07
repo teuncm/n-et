@@ -3,8 +3,7 @@
  * Link: https://github.com/teuncm/
  * Repository: https://github.com/teuncm/n-et/
  * 
- * Create and perform calculations on arbitrary equal temperament tunings. Useful for web apps that deal with MIDI, frequency or note information.
- * These classes contain tested calculations to build tuners, digital synthesizers and more.
+ * Library for equal temperament (ET/TET/EDO) tuning systems. Convert between MIDI, frequency and scientific pitch notation. Useful for building web synthesizers, tuners and more!
  */
 
 /* Default reference note frequency in Hz. */

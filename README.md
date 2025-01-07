@@ -1,6 +1,6 @@
 # n-et
 
-Create and perform calculations on arbitrary equal temperament tunings. Useful for web apps that deal with MIDI, frequency or note information.
+Library for equal temperament (ET/TET/EDO) tuning systems. Convert between MIDI, frequency and scientific pitch notation. Useful for building web synthesizers, tuners and more!
 
 ### Installation
 
